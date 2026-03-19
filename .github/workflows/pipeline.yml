@@ -34,7 +34,7 @@ jobs:
     needs: test
     uses: Supplement-Bacon/.github/.github/workflows/forge.yml@feat/deploy
     secrets:
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+      SSH_PRIVATE_KEY: ${{ secrets.P_SSH_PRIVATE_KEY }}
+      SSH_KNOWN_HOSTS: ${{ secrets.P_SSH_KNOWN_HOSTS }}
     with:
       environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}

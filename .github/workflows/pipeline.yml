@@ -1,0 +1,37 @@
+name: Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - "**"
+  workflow_dispatch: {}
+
+permissions:
+  actions: write
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  lint:
+    uses: Supplement-Bacon/.github/.github/workflows/laravel-pint.yml@feat/deploy
+    secrets: inherit
+
+  test:
+    needs: lint
+    uses: Supplement-Bacon/.github/.github/workflows/phpunit.yml@feat/deploy
+    secrets: inherit
+    with:
+      test-args: "--parallel --processes=4 --colors=never"
+      run-phpunit-coverage: false
+
+  deploy:
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main')
+    needs: test
+    uses: Supplement-Bacon/.github/.github/workflows/forge.yml@feat/deploy
+    with:
+      environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
